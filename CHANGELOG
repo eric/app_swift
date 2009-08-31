@@ -1,4 +1,4 @@
-2008-07-08 - Darren Sessions <dmsessions@gmail.com>
+2008-07-09 - Darren Sessions <dmsessions@gmail.com>
 ---------------------------------------------------  
   Added support for handling multiple dtmf input 
 
@@ -9,9 +9,14 @@
   Can now wait for DTMF after text-to-speech processing is done if the
   timeout and max digits args are specified
 
-  Internal cleanup
+  app_swift 1.6.2 released for the Asterisk 1.6.x code base
 
-  app_swift 1.4.2 released for the Asterisk 1.4.x code base
+
+2008-04-15 - Darren Sessions <dmsessions@gmail.com>
+---------------------------------------------------
+  Updated to work with Asterisk 1.6.0-beta7.1 (will no longer work with 1.4.x)
+  Internal cleanup
+  app_swift 1.6.1 released
 
 
 2006-10-27 - Will Orton <will@loopfree.net>

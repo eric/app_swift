@@ -27,7 +27,7 @@
  ***/
 
 #include "asterisk.h"
-ASTERISK_FILE_VERSION(__FILE__, "$Revision: 1.4.2 $")
+ASTERISK_FILE_VERSION(__FILE__, "$Revision: 1.6.2 $")
 
 #include <string.h>
 #include <stdio.h>
@@ -174,7 +174,7 @@ swift_result_t swift_cb(swift_event *event, swift_event_t type, void *udata)
             if (ps->immediate_exit)
                 return SWIFT_SUCCESS;
             
-            spacefree = cfg_buffer_size - ((unsigned int) ps->pq_w - (unsigned int)ps->q);
+            spacefree = cfg_buffer_size - ((uintptr_t) ps->pq_w - (uintptr_t)ps->q);
             if (len > spacefree) {
 //                ast_log(LOG_DEBUG, "audio fancy write; %d bytes but only %d avail to end %d totalavail\n", len, spacefree, cfg_buffer_size - ps->qc);
                 //write #1 to end of mem
@@ -529,6 +529,7 @@ static int load_module(void)
     int res;
     const char *t = NULL;
     struct ast_config *cfg;
+    struct ast_flags config_flags = { 0 };
 
     // Set defaults
     cfg_buffer_size = 65535;
@@ -536,7 +537,7 @@ static int load_module(void)
     strncpy(cfg_voice, "David-8kHz", sizeof(cfg_voice));
                
     res = ast_register_application(app, engine, synopsis, descrip);
-    cfg = ast_config_load(SWIFT_CONFIG_FILE);
+    cfg = ast_config_load(SWIFT_CONFIG_FILE, config_flags);
 
     if (cfg) {
         if ((t = ast_variable_retrieve(cfg, "general", "buffer_size"))) {

@@ -2,9 +2,9 @@ The beauty of this application is its ability to stream the
 data from the text-to-speech engine vs. having to write out
 and possibly convert audio files to the filesystem.
 
-This release is specific to the Asterisk 1.4.x codebase and
-will NOT work with the 1.6.x codebase. Please visit my site
-for 1.6.x compatible releases.
+This release is specific to the Asterisk 1.6.x codebase and
+will NOT work with the 1.4.x codebase. Please visit my site
+for 1.4.x compatible releases.
 
 http://www.darrensessions.com
 
