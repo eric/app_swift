@@ -68,6 +68,8 @@ static char *descrip =" Syntax: Swift(text[|timeout in ms|maximum digits])\n"
                       "will automatically ignore DTMF.\n"
                       "Returns -1 on hangup or 0 otherwise.  \n";
 
+#define AST_MODULE "app_swift"
+
 const int framesize = 160 * 4;
 const int samplerate = 8000; // We do uLAW
 
@@ -393,7 +395,7 @@ static int engine(struct ast_channel *chan, void *data)
                 myf.f.subclass = AST_FORMAT_ULAW;
                 myf.f.datalen = len;
                 myf.f.samples = len;
-                myf.f.data = myf.frdata;
+                myf.f.data.ptr = myf.frdata;
                 myf.f.mallocd = 0;
                 myf.f.offset = AST_FRIENDLY_OFFSET;
                 myf.f.src = __PRETTY_FUNCTION__;
