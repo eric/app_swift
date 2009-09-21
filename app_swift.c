@@ -327,7 +327,7 @@ static int swift_exec(struct ast_channel *chan, void *data)
                 myf.f.subclass = AST_FORMAT_ULAW;
                 myf.f.datalen = len;
                 myf.f.samples = len;
-                myf.f.data = myf.frdata;
+                myf.f.data.ptr = myf.frdata;
                 myf.f.mallocd = 0;
                 myf.f.offset = AST_FRIENDLY_OFFSET;
                 myf.f.src = __PRETTY_FUNCTION__;
@@ -434,6 +434,7 @@ static int load_module(void)
     int res;
     const char *t = NULL;
     struct ast_config *cfg;
+    struct ast_flags config_flags = { 0 };
 
     // Set defaults
     cfg_buffer_size = 65535;
@@ -441,7 +442,7 @@ static int load_module(void)
 		//    strncpy(cfg_voice, "David-8kHz", sizeof(cfg_voice));
                 
     res = ast_register_application(app, swift_exec, synopsis, descrip);
-    cfg = ast_config_load(SWIFT_CONFIG_FILE);
+    cfg = ast_config_load(SWIFT_CONFIG_FILE, config_flags);
 
     if (cfg) {
         if ((t = ast_variable_retrieve(cfg, "general", "buffer_size"))) {
