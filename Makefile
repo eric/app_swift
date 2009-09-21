@@ -9,31 +9,45 @@
 NAME=app_swift
 CONF=swift.conf
 
-ASTINC=/usr/include/asterisk
-MODULES_DIR=/usr/lib/asterisk/modules
+CC      = gcc
+CFLAGS ?= -g -Wall -D_REENTRANT -D_GNU_SOURCE -fPIC
+OSARCH  =$(shell uname -s)
 
-CC=gcc
-CFLAGS=$(shell ./cflags.sh)
-
-OSARCH=$(shell uname -s)
+SWIFT_DIR ?= /opt/swift
 
 ifeq ($(OSARCH),Darwin)
-  CFLAGS+= -D__Darwin__
-	SOLINK=-dynamic -bundle -undefined suppress -force_flat_namespace -framework swift
-	TESTLINK=-undefined suppress -force_flat_namespace -framework swift
-  ASTINC=/Library/Asterisk/include
-  MODULES_DIR=/Library/Asterisk/modules
-  CONF_DIR=/Library/Asterisk/conf
-  CC=gcc -arch ppc -arch i386
+  AST_DIR     ?= /Library/Asterisk
+  MODULES_DIR ?= $(AST_DIR)/modules
+  CONF_DIR    ?= $(AST_DIR)/conf
 else
-	SWIFT_DIR=/opt/swift
-	CFLAGS+= -I${SWIFT_DIR}/include
-	LDFLAGS=-L${SWIFT_DIR}/lib -lswift -lm $(patsubst ${SWIFT_DIR}/lib/lib%.so,-l%,$(wildcard ${SWIFT_DIR}/lib/libcep*.so))
-	SOLINK=-shared -Xlinker -x
-  CONF_DIR=/etc/asterisk
+  AST_DIR     ?= /usr
+  MODULES_DIR ?= $(AST_DIR)/lib/asterisk/modules
+  CONF_DIR    ?= /etc/asterisk
 endif
 
-RES=$(shell if [ -f ${ASTINC}/channel.h ]; then echo "$(NAME).so"; fi)
+CFLAGS += -I$(AST_DIR)/include -DAST_MODULE=\"$(NAME)\"
+
+ifneq ($(shell grep -c ast_config_load $(AST_DIR)/include/asterisk/channel.h),0)
+	CFLAGS += -DCHANNEL_HAS_CID
+endif
+
+ifneq ($(shell grep -c ast_config_load $(AST_DIR)/include/asterisk/config.h),0)
+	CFLAGS += -DNEW_CONFIG
+endif
+
+
+ifeq ($(OSARCH),Darwin)
+  CFLAGS += -D__Darwin__
+	SOLINK=-dynamic -bundle -undefined suppress -force_flat_namespace -framework swift
+	TESTLINK=-undefined suppress -force_flat_namespace -framework swift
+  CC=gcc -arch ppc -arch i386
+else
+  CFLAGS    += -I${SWIFT_DIR}/include
+  LDFLAGS   =  -L${SWIFT_DIR}/lib -lswift -lm $(patsubst ${SWIFT_DIR}/lib/lib%.so,-l%,$(wildcard ${SWIFT_DIR}/lib/libcep*.so))
+  SOLINK    =  -shared -Xlinker -x
+endif
+
+RES=$(shell if [ -f $(AST_DIR)/include/asterisk/channel.h ]; then echo "$(NAME).so"; fi)
 
 $(NAME).so : $(NAME).o
 	$(CC) $(SOLINK) -o $@ $(LDFLAGS) $<
