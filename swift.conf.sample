@@ -25,8 +25,8 @@ buffer_size=65535
 goto_exten=no
 
 ; voice
-; default: David-8kHz
+; default: Swift default voice
 ;
 ; Set the voice you want swift to use; If the voice you specify is not found,
 ; swift will automatically use the default voice it is configured with.
-voice=David-8kHz
+;voice=David-8kHz

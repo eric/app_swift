@@ -1,27 +1,40 @@
-The beauty of this application is its ability to stream the
-data from the text-to-speech engine vs. having to write out
-and possibly convert audio files to the filesystem.
+Sven Slezák <sunny@mezzo.net>
 
-This release is specific to the Asterisk 1.6.x codebase and
-will NOT work with the 1.4.x codebase. Please visit my site
-for 1.4.x compatible releases.
+Swift is an Asterisk application module for using the Cepstral Swift Text-To-Speech (TTS) Engine in Asterisk.
+You need to download and install one of the Cepstral Voices first. 
+http://www.cepstral.com/downloads/
+Voices are available for Mac OS-X, Linux, Windows and WindowsCE in several languages like
+English, Spanish, German, French, Italian in professional quality for a very reasonable price (~30US$).
+You can use all Voices in demo mode until you have a license.
 
-http://www.darrensessions.com
+Install one of the Cepstral Voices. Use the standard install directory /opt. 
+On Linux don't forget to insert /opt/swift/lib into your /etc/ld.so.conf file and run ldconfig.
+You can configure the voice for app_swift to use in swift.conf:
+For example:
 
-For addition help, type 'core show application swift' on the
-Asterisk command line interface.
+[general]
+voice=Katrin
 
-Bug reports, comments, or otherwise can be directed to me at
-dmsessions@gmail.com.
+for the german female voice. If you comment out 'voice=' the standard voice is used.
 
-Thanks,
+In the app_sqfit directory run
 
-- Darren Sessions
-
-
-Installation
-------------
-unpack
-make
 make install
 
+and load the module into Asterisk with
+
+> load app_swift.so
+
+done.
+
+Usage in the dialplan:
+
+[menu]
+exten => s,1,Wait(2)  ; give it 2 seconds to open the line
+exten => s,2,Swift(This text is going to get spoken by the Swift engine to the caller)
+exten => s,3,Swift(You can press buttons on your keypad at any time)
+exten => 1,1,Swift(You've pressed 1)
+exten => 5,1,Swift(You've pressed 5)
+exten => t,1,Swift(Anybody there?)
+exten => i,1,Swift(goodbye)
+exten => i,2,Hangup
